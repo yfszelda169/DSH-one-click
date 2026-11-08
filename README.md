@@ -1,16 +1,18 @@
 # DeepSeek Harness Windows 一键部署
 
-双击 `install-deepseek-harness.cmd` 即可运行。它是一个**单文件自包含 CMD**，不需要旁边的 `.ps1`；安装逻辑会由 CMD 解码到系统临时目录后调用 Windows 自带 PowerShell 执行，结束后自动删除临时文件。脚本会按顺序检查环境、安装依赖、静默安装官方 Windows 桌面端、提示输入 DeepSeek API Key，再把插件和技能装到当前用户目录。
+[English](README.en.md) | 中文
+
+双击 `install-deepseek-harness.cmd` 即可运行。它是一个**单文件自包含 CMD**，不需要旁边的 `.ps1`；安装逻辑会由 CMD 解码到系统临时目录后调用 Windows 自带 PowerShell 执行，结束后自动删除临时文件。脚本会按顺序检查环境、安装依赖、静默安装官方 Windows 桌面端，再把插件和技能装到当前用户目录。API Key 不再由安装器收集，首次启动后在 DSH 的 **Settings → Models** 中填写。
 
 ## 快速使用
 
 1. 双击 `install-deepseek-harness.cmd`。
 2. 等待 Node.js、Git、DeepSeek Harness 安装完成。
-3. 按提示输入 DeepSeek API Key。输入会隐藏，并先调用 DeepSeek API 校验。
-4. 脚本首次会短暂启动一次 DeepSeek Harness 以初始化 Desktop profile，然后自动关闭。
-5. 按编号多选要安装的插件，再按编号多选要安装的技能。输入示例：`1 3 5`、`1,3,5`；`all` 全选；`0` 不安装。
-6. 脚本优先从 GitHub 拉取所选插件/技能；GitHub 超时或失败时自动切换国内镜像。
-7. 完成后 DeepSeek Harness 会自动启动。
+3. 脚本首次会短暂启动一次 DeepSeek Harness 以初始化 Desktop profile，然后自动关闭。
+4. 按编号多选要安装的插件，再按编号多选要安装的技能。输入示例：`1 3 5`、`1,3,5`；`all` 全选；`0` 不安装。
+5. 脚本优先从 GitHub 拉取所选插件/技能；GitHub 超时或失败时自动切换国内镜像。
+6. 完成后 DeepSeek Harness 会自动启动。
+7. 在 DeepSeek Harness 的 **Settings → Models** 中自行填写 DeepSeek API Key。
 
 只检查、不修改系统：
 
@@ -25,15 +27,15 @@ install-deepseek-harness.cmd -CheckOnly -NoLaunch
 | `-CheckOnly` | 只做环境与网络检查，不安装任何软件 |
 | `-SkipPlugins` | 跳过插件和技能的选择与安装 |
 | `-NoLaunch` | 安装完成后不自动启动 DeepSeek Harness |
-| `-Force` | 强制重新安装桌面端，并重新询问 API Key |
+| `-Force` | 强制重新安装桌面端 |
 
 ## 安装内容
 
 | 组件 | 来源 / 说明 |
 |---|---|
 | DeepSeek Harness 官方 Windows 桌面版 | `https://download.deepseek.com/desktop/dsh-latest-windows-x64.exe` |
-| Node.js 24+ | 要求 `>=24.9.0`；优先 WinGet LTS，失败时回退官方绿色包 |
-| Git for Windows | 优先 WinGet；安装失败不会阻断主流程 |
+| Node.js 24+ | 要求 `>=24.9.0`；优先 WinGet LTS，失败时回退官方绿色包。WinGet 可能触发 UAC |
+| Git for Windows | 优先 WinGet；安装失败不会阻断主流程。WinGet 可能触发 UAC |
 | WinGet | 已有则使用；不存在时 Node.js 会走官方绿色包回退 |
 
 Node.js 是 `find-skills` 和 DSH CLI 生态所需依赖。基础安装不需要 Python；可选的 10 个插件也不依赖系统 Python。
@@ -45,7 +47,6 @@ Node.js 是 `find-skills` 和 DSH CLI 生态所需依赖。基础安装不需要
 | DeepSeek Harness | `%LOCALAPPDATA%\Programs\DeepSeek Harness` |
 | DSH_HOME | `%USERPROFILE%\.dsh` |
 | 技能目录 | `%USERPROFILE%\.dsh\skills` |
-| API Key | `%USERPROFILE%\.dsh\.env` |
 | 安装日志 | `%LOCALAPPDATA%\DeepSeekHarnessInstaller` |
 
 如果设置了 `DSH_HOME`，脚本会尊重该环境变量。
@@ -87,14 +88,17 @@ Node.js 是 `find-skills` 和 DSH CLI 生态所需依赖。基础安装不需要
 
 技能：先尝试 GitHub Raw；如果超时或失败，则切换到 jsDelivr 国内可访问 CDN 镜像。所有 Git 源都固定到 commit，不使用浮动的 `main`。
 
-## API Key 处理
+## API Key 配置
 
-- 使用 PowerShell 安全字符串输入，不回显。
-- 先请求 `https://api.deepseek.com/models` 校验；401/403 会要求重新输入。
-- 网络无法校验时会提示，但仍保存输入值。
-- 写入 `%USERPROFILE%\.dsh\.env`，并设置当前用户的 `DEEPSEEK_API_KEY` 环境变量。
-- `.env` 会通过 `icacls` 收紧为当前用户权限。
-- 脚本不会把 API Key 输出到日志或控制台。
+安装器不会询问、验证或保存 DeepSeek API Key。安装完成后启动 DeepSeek Harness，在 **Settings → Models** 中填写 API Key。API Key 由 DSH 自己的设置/凭据机制管理。
+
+## 管理员权限与 UAC
+
+- DeepSeek Harness 桌面端、插件、技能、用户 PATH 和 `%USERPROFILE%\.dsh` 下的配置都是用户级操作，不需要管理员权限。
+- Node.js 和 Git 优先通过 WinGet 的 `--scope user` 安装；如果对应 WinGet 包不支持用户级安装，脚本可能回退到默认系统安装，此时 Windows 会弹出 UAC。
+- `-CheckOnly` 只做检查和网络探测，不会安装软件，也不会触发 UAC。
+- 如果你要求严格零 UAC，请预先安装 Node.js `>=24.9.0` 和 Git，或把脚本改成完全使用便携版 Node/Git。
+- 建议用普通用户身份运行；脚本检测到管理员身份时会提示通常不需要管理员权限。
 
 ## 校验与安全
 
@@ -107,6 +111,7 @@ Node.js 是 `find-skills` 和 DSH CLI 生态所需依赖。基础安装不需要
 ## 注意事项
 
 - 需要 Windows 10/11 64 位、至少 2 GB 可用空间和互联网连接。
+- 安装器不处理 API Key；请在首次启动后的 **Settings → Models** 中配置。
 - 官方 DSH 桌面端是用户级安装，通常不需要管理员权限。
 - 首次初始化 Desktop profile 时，应用可能短暂出现窗口，完成后由脚本自动关闭。
 - 如果插件安装失败，重新运行脚本并重新选择即可；已安装的组件会跳过或更新。
