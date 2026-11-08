@@ -1,8 +1,10 @@
 # DeepSeek Harness Windows One-Click Installer
 
-English | [中文](README.md)
+[中文](README.zh.md) | [English](README.en.md) | [Français](README.fr.md) | [Español](README.es.md) | [Русский](README.ru.md) | [العربية](README.ar.md)
 
 Double-click `install-deepseek-harness.cmd` to run it. This is a **single-file, self-contained CMD installer** and does not require a separate `.ps1` file. The CMD extracts its embedded installer logic to the system temporary directory, runs it with the built-in Windows PowerShell, and removes the temporary file afterward. The installer checks the environment, installs dependencies, silently installs the official Windows desktop app, then installs the plugins and skills you select into the current user's profile. The installer no longer collects an API key. After the first launch, enter it in DeepSeek Harness under **Settings → Models**.
+
+The installer automatically detects the Windows system language and supports Chinese, English, French, Spanish, Russian, and Arabic. You can force a language with `set DSH_INSTALLER_LANG=en` before running the installer.
 
 ## Quick start
 
