@@ -12,7 +12,7 @@ The installer automatically detects the Windows system language and supports Chi
 2. Wait for Node.js, Git, and DeepSeek Harness to finish installing.
 3. The installer briefly launches DeepSeek Harness once to initialize the Desktop profile, then closes it automatically.
 4. Select the plugins you want by number, then select the skills you want. Examples: `1 3 5` or `1,3,5`; `all` selects everything; `0` installs nothing.
-5. The installer tries GitHub first for every selected plugin/skill and automatically falls back to a China-accessible mirror on timeout or failure.
+5. Every selected plugin/skill is fetched from GitHub. If it times out or fails, installation fails; China mirrors are disabled for this language.
 6. DeepSeek Harness starts automatically when the installer finishes.
 7. Enter your DeepSeek API key in DeepSeek Harness under **Settings → Models**.
 
@@ -84,11 +84,11 @@ First-use notes: ModLens needs a vision model or an existing local vision config
 
 Skills are pinned to the Git commits used when this installer was built to avoid `main` branch drift.
 
-## GitHub-first with China mirror fallback
+## GitHub only for this language
 
-Plugins: the installer first tries the pinned GitHub commit for the selected repository. If it times out within 60 seconds, fails, or does not change the profile, it falls back to installing the same pinned npm version from `registry.npmmirror.com`.
+China mirrors are enabled only when the installer UI language is Chinese. This English UI uses GitHub only and never falls back to npmmirror or jsDelivr.
 
-Skills: the installer first tries GitHub Raw. On timeout or failure, it falls back to the China-accessible jsDelivr CDN mirror. All Git sources are pinned to commits and never use a floating `main`.
+Plugins use pinned GitHub commits. Skills use GitHub Raw. All Git sources are pinned to commits and never use a floating `main`.
 
 ## API key configuration
 
@@ -107,7 +107,7 @@ The installer does not ask for, validate, or store a DeepSeek API key. After ins
 - The official DSH installer validates its Authenticode signature and aborts on failure.
 - The installer prints the installer package SHA256.
 - The Node.js portable fallback verifies the official `SHASUMS256.txt`.
-- Plugins first use a pinned GitHub commit and fall back to the same version from npmmirror; skills use pinned commits with jsDelivr fallback.
+- Plugins and skills use pinned GitHub sources only in this language. China mirror fallback is enabled only for the Chinese UI.
 - Third-party plugins run in the DSH process with your user permissions. Review each repository before installing it.
 
 ## Notes

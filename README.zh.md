@@ -12,7 +12,7 @@
 2. 等待 Node.js、Git、DeepSeek Harness 安装完成。
 3. 脚本首次会短暂启动一次 DeepSeek Harness 以初始化 Desktop profile，然后自动关闭。
 4. 按编号多选要安装的插件，再按编号多选要安装的技能。输入示例：`1 3 5`、`1,3,5`；`all` 全选；`0` 不安装。
-5. 脚本优先从 GitHub 拉取所选插件/技能；GitHub 超时或失败时自动切换国内镜像。
+5. 脚本优先从 GitHub 拉取所选插件/技能。仅当界面语言为中文时，GitHub 超时或失败才切换国内镜像；其他语言只使用 GitHub。
 6. 完成后 DeepSeek Harness 会自动启动。
 7. 在 DeepSeek Harness 的 **Settings → Models** 中自行填写 DeepSeek API Key。
 
@@ -84,11 +84,11 @@ Node.js 是 `find-skills` 和 DSH CLI 生态所需依赖。基础安装不需要
 
 技能固定到脚本编写时的 Git commit，避免 `main` 分支漂移。
 
-## GitHub 优先与国内镜像
+## GitHub 优先与国内镜像（仅中文界面）
 
-插件：先尝试对应 GitHub 仓库的固定 commit；如果 60 秒内超时、安装失败或 profile 未发生变化，则切换到 `registry.npmmirror.com` 安装同版本的 npm 包。
+国内镜像只在安装器界面语言为中文时启用。英文、法文、西班牙文、俄文、阿拉伯文界面只使用 GitHub，不启用 npmmirror 或 jsDelivr 回退。
 
-技能：先尝试 GitHub Raw；如果超时或失败，则切换到 jsDelivr 国内可访问 CDN 镜像。所有 Git 源都固定到 commit，不使用浮动的 `main`。
+中文界面下：插件先尝试对应 GitHub 仓库的固定 commit；如果 60 秒内超时、安装失败或 profile 未发生变化，则切换到 `registry.npmmirror.com` 安装同版本的 npm 包。技能先尝试 GitHub Raw；如果超时或失败，则切换到 jsDelivr 国内可访问 CDN 镜像。所有 Git 源都固定到 commit，不使用浮动的 `main`。
 
 ## API Key 配置
 
@@ -107,7 +107,7 @@ Node.js 是 `find-skills` 和 DSH CLI 生态所需依赖。基础安装不需要
 - 官方 DSH 安装包会检查 Authenticode 签名，失败则中止。
 - 脚本会打印安装包 SHA256。
 - Node.js 绿色包回退会校验 Node 官方 `SHASUMS256.txt`。
-- 插件先安装固定 GitHub commit，失败时回退到同版本 npmmirror npm 包；技能使用固定 commit，并有 jsDelivr 回退。
+- 插件先安装固定 GitHub commit；仅在中文界面下，失败时才回退到同版本 npmmirror npm 包。技能使用固定 commit；仅在中文界面下启用 jsDelivr 回退。
 - 第三方插件会以当前用户权限运行在 DSH 进程中，安装前请自行评估仓库可信度。
 
 ## 注意事项

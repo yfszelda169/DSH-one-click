@@ -13,7 +13,7 @@ Haz doble clic en **install-deepseek-harness.cmd** para iniciar. Es un **instala
 2. Espera a que terminen Node.js, Git y DeepSeek Harness.
 3. El instalador inicia brevemente DeepSeek Harness para inicializar el perfil Desktop y luego lo cierra automáticamente.
 4. Selecciona los complementos por número y después las habilidades. Ejemplos: 1 3 5 o 1,3,5; all selecciona todo; 0 no instala nada.
-5. Cada complemento o habilidad se intenta primero desde GitHub. Si hay tiempo de espera agotado o error, se usa un espejo accesible desde China.
+5. Cada complemento o habilidad se obtiene desde GitHub. Si hay tiempo de espera agotado o error, la instalación falla; los espejos chinos están deshabilitados para este idioma.
 6. DeepSeek Harness se inicia automáticamente al terminar.
 7. Introduce tu clave API de DeepSeek en DeepSeek Harness en **Settings → Models**.
 
@@ -83,11 +83,11 @@ Notas: ModLens necesita un modelo de visión o una configuración local existent
 
 Las habilidades están fijadas a commits Git concretos para evitar cambios inesperados de la rama main.
 
-## GitHub primero, espejos chinos después
+## Solo GitHub para este idioma
 
-Complementos: el instalador intenta primero el commit fijado en GitHub. Si se agota el tiempo de espera de 60 segundos, falla o el perfil no cambia, instala la misma versión desde **registry.npmmirror.com**.
+Los espejos chinos solo se activan cuando la interfaz del instalador está en chino. Esta interfaz en español usa únicamente GitHub y nunca recurre a npmmirror ni jsDelivr.
 
-Habilidades: primero se intenta GitHub Raw. Si falla o se agota el tiempo, se usa el espejo CDN jsDelivr. Todas las fuentes Git están fijadas a commits y nunca usan una rama main flotante.
+Los complementos usan commits fijados de GitHub. Las habilidades usan GitHub Raw. Todas las fuentes Git están fijadas a commits y nunca usan una rama main flotante.
 
 ## Configuración de la clave API
 
@@ -106,7 +106,7 @@ El instalador no solicita, valida ni almacena la clave API de DeepSeek. Después
 - El instalador oficial DSH valida su firma Authenticode y se detiene si falla.
 - Se muestra el SHA256 del instalador.
 - El ZIP portátil de Node.js verifica el archivo oficial SHASUMS256.txt.
-- Los complementos usan primero un commit fijado de GitHub y después la misma versión desde npmmirror; las habilidades usan commits fijados con respaldo jsDelivr.
+- Los complementos y habilidades usan únicamente fuentes GitHub fijadas en este idioma. El respaldo por espejo chino solo se activa para la interfaz en chino.
 - Los complementos de terceros se ejecutan dentro del proceso DSH con tus permisos de usuario. Revisa cada repositorio antes de instalarlo.
 
 ## Notas

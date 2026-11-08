@@ -13,7 +13,7 @@ Double-cliquez sur **install-deepseek-harness.cmd** pour démarrer. Il s’agit 
 2. Attendez l’installation de Node.js, Git et DeepSeek Harness.
 3. L’installateur démarre brièvement DeepSeek Harness pour initialiser le profil Desktop, puis le ferme automatiquement.
 4. Sélectionnez les plugins par numéro, puis les compétences. Exemples : 1 3 5 ou 1,3,5 ; all sélectionne tout ; 0 n’installe rien.
-5. Chaque plugin ou compétence est d’abord récupéré depuis GitHub. En cas de délai dépassé ou d’échec, un miroir accessible en Chine est utilisé.
+5. Chaque plugin ou compétence est récupéré depuis GitHub. En cas de délai dépassé ou d’échec, l’installation échoue ; les miroirs chinois sont désactivés pour cette langue.
 6. DeepSeek Harness démarre automatiquement à la fin.
 7. Saisissez votre clé API DeepSeek dans DeepSeek Harness sous **Settings → Models**.
 
@@ -83,11 +83,11 @@ Remarques : ModLens nécessite un modèle de vision ou une configuration locale 
 
 Les compétences sont épinglées à un commit Git précis afin d’éviter les dérives de la branche main.
 
-## GitHub d’abord, miroirs chinois ensuite
+## GitHub uniquement pour cette langue
 
-Plugins : l’installateur essaie d’abord le commit GitHub épinglé. En cas de délai dépassé après 60 secondes, d’échec ou d’absence de modification du profil, il installe la même version depuis **registry.npmmirror.com**.
+Les miroirs chinois ne sont activés que lorsque l’interface de l’installateur est en chinois. Cette interface française utilise uniquement GitHub et ne bascule jamais vers npmmirror ou jsDelivr.
 
-Compétences : GitHub Raw est essayé en premier. En cas d’échec ou de délai dépassé, le miroir CDN jsDelivr est utilisé. Toutes les sources Git sont épinglées à des commits, jamais à une branche main flottante.
+Les plugins utilisent des commits GitHub épinglés. Les compétences utilisent GitHub Raw. Toutes les sources Git sont épinglées à des commits, jamais à une branche main flottante.
 
 ## Configuration de la clé API
 
@@ -106,7 +106,7 @@ L’installateur ne demande pas, ne valide pas et ne stocke pas la clé API Deep
 - L’installateur officiel DSH vérifie sa signature Authenticode et s’arrête en cas d’échec.
 - Le SHA256 de l’installateur est affiché.
 - La version portable de Node.js vérifie le fichier officiel SHASUMS256.txt.
-- Les plugins utilisent d’abord un commit GitHub épinglé, puis la même version via npmmirror ; les compétences utilisent des commits épinglés avec secours jsDelivr.
+- Les plugins et compétences utilisent uniquement des sources GitHub épinglées dans cette langue. Le secours par miroir chinois est activé uniquement pour l’interface chinoise.
 - Les plugins tiers s’exécutent dans le processus DSH avec vos permissions utilisateur. Vérifiez chaque dépôt avant l’installation.
 
 ## Remarques
